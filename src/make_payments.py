@@ -1,26 +1,65 @@
-from .payment_gateways import ExpensivePaymentGateway, PremiumPaymentGateway, CheapPaymentGateway
-from flask import abort, jsonify
-
-cc = 5104740265868658
+from .payment_gateways import *
+from flask import abort
 
 
 def make_payments(data):
-    if 0 < data['amount'] < 21:
+    # first check payment type
+    if 0 < data[ 'amount' ] < 21:
         try:
+            # try only once
             status = CheapPaymentGateway(data)
             if status['success']:
-                return jsonify({
+                return {
                     "success": True,
                     "message": 'Payment is processed'
-                })
+                }
         except:
             abort(500)
-    elif 21 <= data['amount'] <= 500:
+    elif 21 <= data[ 'amount' ] <= 500:
         try:
-            ExpensivePaymentGateway(data)
+            # try expensive if failed then try cheap payment
+            status = ExpensivePaymentGateway(data)
+            if status[ 'success' ]:
+                return {
+                    "success": True,
+                    "message": 'Payment is processed'
+                }
         except:
             try:
-                CheapPaymentGateway(data)
+                # try cheap payment upon expensive payment failure
+                status = CheapPaymentGateway(data)
+                if status[ 'success' ]:
+                    return {
+                        "success": True,
+                        "message": 'Payment is processed'
+                    }
             except:
                 abort(500)
-    elif data['amount'] > 500:
+
+    elif data[ 'amount' ] > 500:
+        try:
+            # try premium payment once
+            status = PremiumPaymentGateway(data)
+            if status[ 'success' ]:
+                return {
+                    "success": True,
+                    "message": 'Payment is processed'
+                }
+        except:
+            trials = 0
+            fail = False
+            # try premium payment three times more upon first trial failure
+            while trials < 3:
+                status = PremiumPaymentGateway(data)
+                if status[ 'success' ]:
+                    trials += 3
+                    return {
+                        "success": True,
+                        "message": 'Payment is processed'
+                    }
+                else:
+                    trials += 1
+                    if trials == 3:
+                        fail = True
+            if fail:
+                abort(500)
