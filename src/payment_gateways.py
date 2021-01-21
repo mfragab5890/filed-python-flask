@@ -1,5 +1,3 @@
-from flask import jsonify
-
 from .models.models import *
 
 
@@ -14,15 +12,15 @@ def PremiumPaymentGateway(data):
             amount=data['amount']
         )
         payment.insert()
-        return jsonify({
+        return {
             "success": True,
             "message": 'Payment Details Sent Successfully'
-        })
+        }
     except:
-        return jsonify({
+        return {
             "success": False,
             "message": 'Payment Unsuccessful'
-        })
+        }
 
 
 # ExpensivePaymentGateway
@@ -36,15 +34,15 @@ def ExpensivePaymentGateway(data):
             amount=data[ 'amount' ]
         )
         payment.insert()
-        return jsonify({
+        return {
             "success": True,
             "message": 'Payment Details Sent Successfully'
-        })
+        }
     except:
-        return jsonify({
+        return {
             "success": False,
             "message": 'Payment Unsuccessful'
-        })
+        }
 
 
 # CheapPaymentGateway
@@ -58,12 +56,12 @@ def CheapPaymentGateway(data):
             amount=data[ 'amount' ]
         )
         payment.insert()
-        return jsonify({
+        return {
             "success": True,
             "message": 'Payment Details Sent Successfully'
-        })
+        }
     except:
-        return jsonify({
+        return {
             "success": False,
             "message": 'Payment Unsuccessful'
-        })
+        }
