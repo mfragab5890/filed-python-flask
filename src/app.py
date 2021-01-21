@@ -56,11 +56,12 @@ def create_app():
             'amount': amount
         }
         try:
-
-            return jsonify({
-                'success': True,
-                'message': 'Payment is processed'
-            })
+            status = make_payments(data)
+            if status['success']:
+                return jsonify({
+                    'success': True,
+                    'message': 'Payment is processed'
+                })
 
 
         except Exception as e:
