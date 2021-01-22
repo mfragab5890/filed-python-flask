@@ -1,0 +1,197 @@
+{
+	"info": {
+		"_postman_id": "83898711-c63d-42f8-8037-ade3a010a7ce",
+		"name": "filed-python-flask",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "payment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"CreditCardNumber\":\"3530111333300000\",\r\n    \"CardHolder\": \"mostafa fouad\",\r\n    \"ExpirationDate\":\"2200-01-21 18:12:33.747907\", \r\n    \"SecurityCode\": \"424\", \r\n    \"Amount\":1990\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/payment",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"payment"
+					]
+				},
+				"description": "Make sure sending the correct data will return success"
+			},
+			"response": []
+		},
+		{
+			"name": "payment_invalid_credit_card",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"CreditCardNumber\":\"353011133330000\",\r\n    \"CardHolder\": \"mostafa fouad\",\r\n    \"ExpirationDate\":\"2022-01-01 01:01:0.00\", \r\n    \"SecurityCode\": \"424\", \r\n    \"Amount\":190.5\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/payment",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"payment"
+					]
+				},
+				"description": "Make sure sending invalid credit card number will raise error 400"
+			},
+			"response": []
+		},
+		{
+			"name": "payment_no_card_holder",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"CreditCardNumber\":\"371449635398431\",\r\n    \"ExpirationDate\":\"2022-01-01 01:01:0.00\", \r\n    \"SecurityCode\": \"424\", \r\n    \"Amount\":190.5\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/payment",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"payment"
+					]
+				},
+				"description": "Make sure sending no card holder will raise error 400"
+			},
+			"response": []
+		},
+		{
+			"name": "payment_expired_card",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"CreditCardNumber\":\"371449635398431\",\r\n    \"CardHolder\": \"mostafa fouad\",\r\n    \"ExpirationDate\":\"2020-01-01 01:01:0.00\", \r\n    \"SecurityCode\": \"424\", \r\n    \"Amount\":190.5\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/payment",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"payment"
+					]
+				},
+				"description": "Make sure sending old expiration date of card will raise error 400"
+			},
+			"response": []
+		},
+		{
+			"name": "payment_no_security_code",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"CreditCardNumber\":\"3530111333300000\",\r\n    \"CardHolder\": \"mostafa fouad\",\r\n    \"ExpirationDate\":\"2200-01-21 18:12:33.747907\", \r\n    \"Amount\":1950\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/payment",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"payment"
+					]
+				},
+				"description": "make sure no error will be raised if the security code is not sent."
+			},
+			"response": []
+		},
+		{
+			"name": "payment_invalid_amount",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"CreditCardNumber\":\"3530111333300000\",\r\n    \"CardHolder\": \"mostafa fouad\",\r\n    \"ExpirationDate\":\"2200-01-21 18:12:33.747907\", \r\n    \"SecurityCode\": \"424\", \r\n    \"Amount\":-1990.85\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/payment",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"payment"
+					]
+				},
+				"description": "Make sure sendeing invalid amount will raise error 400"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "localhost:5000"
+		}
+	]
+}
