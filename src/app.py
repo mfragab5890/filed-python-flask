@@ -45,7 +45,10 @@ def create_app():
 
         # check if credit card number is valid
         credit_card_number = body.get('CreditCardNumber', None)
-        if not validate(credit_card_number):
+        if credit_card_number:
+            if not validate(credit_card_number):
+                abort(400)
+        else:
             abort(400)
 
         # check card holder provided
@@ -55,13 +58,18 @@ def create_app():
 
         # check if expiration_date older than current date
         expiration_date = body.get('ExpirationDate', None)
-        expiration_date_format = datetime.strptime(expiration_date, '%Y-%m-%d %H:%M:%S.%f')
-        if expiration_date_format <= datetime.now():
+        if expiration_date:
+            expiration_date_format = datetime.strptime(expiration_date, '%Y-%m-%d %H:%M:%S.%f')
+            if expiration_date_format <= datetime.now():
+                abort(400)
+        else:
             abort(400)
         # security code is optional
         security_code = body.get('SecurityCode', None)
-
+        # check amount to be positive and not none
         amount = body.get('Amount', None)
+        if not amount or amount<0:
+            abort(400)
 
         data = {
             'credit_card_number': credit_card_number,
