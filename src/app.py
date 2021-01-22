@@ -7,6 +7,8 @@ from flask_cors import CORS
 from .make_payments import *
 from datetime import datetime
 from .validiator import validate
+
+
 # creating and initializing the app.
 def create_app():
     # ----------------------------------------------------------------------------#
@@ -41,19 +43,22 @@ def create_app():
     def ProcessPayment():
         body = request.get_json()
 
-        credit_card_number = body.get('CreditCardNumber', None)
         # check if credit card number is valid
+        credit_card_number = body.get('CreditCardNumber', None)
         if not validate(credit_card_number):
             abort(400)
 
+        # check card holder provided
         card_holder = body.get('CardHolder', None)
+        if not card_holder:
+            abort(400)
 
-        expiration_date = body.get('ExpirationDate', None)
         # check if expiration_date older than current date
+        expiration_date = body.get('ExpirationDate', None)
         expiration_date_format = datetime.strptime(expiration_date, '%Y-%m-%d %H:%M:%S.%f')
         if expiration_date_format <= datetime.now():
             abort(400)
-
+        # security code is optional
         security_code = body.get('SecurityCode', None)
 
         amount = body.get('Amount', None)
