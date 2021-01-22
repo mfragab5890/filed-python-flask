@@ -1,12 +1,12 @@
 # ----------------------------------------------------------------------------#
 # Imports
 # ----------------------------------------------------------------------------#
+
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
 from .make_payments import *
 from datetime import datetime
-
-
+from .validiator import validate
 # creating and initializing the app.
 def create_app():
     # ----------------------------------------------------------------------------#
@@ -40,14 +40,24 @@ def create_app():
     @app.route('/payment', methods=[ 'POST' ])
     def ProcessPayment():
         body = request.get_json()
-        # expiration_date < datetime.now()
+
         credit_card_number = body.get('CreditCardNumber', None)
-        card_holder = body.get('CardHolder', None)
-        expiration_date = body.get('ExpirationDate', None)
-        if expiration_date < datetime.now():
+        # check if credit card number is valid
+        if not validate(credit_card_number):
             abort(400)
+
+        card_holder = body.get('CardHolder', None)
+
+        expiration_date = body.get('ExpirationDate', None)
+        # check if expiration_date older than current date
+        expiration_date_format = datetime.strptime(expiration_date, '%Y-%m-%d %H:%M:%S.%f')
+        if expiration_date_format <= datetime.now():
+            abort(400)
+
         security_code = body.get('SecurityCode', None)
+
         amount = body.get('Amount', None)
+
         data = {
             'credit_card_number': credit_card_number,
             'card_holder': card_holder,
@@ -57,7 +67,7 @@ def create_app():
         }
         try:
             status = make_payments(data)
-            if status['success']:
+            if status[ 'success' ]:
                 return jsonify({
                     'success': True,
                     'message': 'Payment is processed'
