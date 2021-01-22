@@ -64,3 +64,5 @@ def make_payments(data):
                         fail = True
             if fail:
                 abort(500)
+    else:
+        abort(400)
