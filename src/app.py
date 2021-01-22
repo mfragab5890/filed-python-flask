@@ -10,7 +10,7 @@ from .validiator import validate
 
 
 # creating and initializing the app.
-def create_app():
+def create_app(test_config=None):
     # ----------------------------------------------------------------------------#
     # App Config.
     # ----------------------------------------------------------------------------#
