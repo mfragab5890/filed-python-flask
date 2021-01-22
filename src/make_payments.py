@@ -2,13 +2,14 @@ from .payment_gateways import *
 from flask import abort
 
 
+# make payment according to business rules
 def make_payments(data):
     # first check payment type
     if 0 < data[ 'amount' ] < 21:
         try:
             # try only once
             status = CheapPaymentGateway(data)
-            if status['success']:
+            if status[ 'success' ]:
                 return {
                     "success": True,
                     "message": 'Payment is processed'
