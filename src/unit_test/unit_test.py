@@ -18,13 +18,13 @@ class FiledApiTestCase(unittest.TestCase):
 
         self.new_payment = {
             "CreditCardNumber": "3530111333300000",
-            "CardHolder": "mostafa fouad",
+            "CardHolder": "Mostafa Fouad",
             "ExpirationDate": "2200-01-21 18:12:33.747907",
             "SecurityCode": "424",
             "Amount": 1990
         }
         self.invalid_card_number = {
-            "CreditCardNumber": "35301113333000",
+            "CreditCardNumber": "35301113333",
             "CardHolder": "mostafa fouad",
             "ExpirationDate": "2200-01-21 18:12:33.747907",
             "SecurityCode": "424",
@@ -39,15 +39,14 @@ class FiledApiTestCase(unittest.TestCase):
         self.expired_card = {
             "CreditCardNumber": "3530111333300000",
             "CardHolder": "mostafa fouad",
-            "ExpirationDate": "2000-01-21 18:12:33.747907",
+            "ExpirationDate": "2020-01-21 18:12:33.747907",
             "SecurityCode": "424",
             "Amount": 1990
         }
         self.no_security_code = {
             "CreditCardNumber": "3530111333300000",
-            "CardHolder": "mostafa fouad",
+            "CardHolder": "mostafa_fouad",
             "ExpirationDate": "2200-01-21 18:12:33.747907",
-            "SecurityCode": "424",
             "Amount": 1990
         }
         self.invalid_amount = {
@@ -55,34 +54,34 @@ class FiledApiTestCase(unittest.TestCase):
             "CardHolder": "mostafa fouad",
             "ExpirationDate": "2200-01-21 18:12:33.747907",
             "SecurityCode": "424",
-            "Amount": 1990
+            "Amount": -1990.58
         }
 
         # binds the app to the current context
         with self.app.app_context():
-            self.db = SQLAlchemy()
+            self.db = db
             self.db.init_app(self.app)
             # create all tables
-            self.db.create_all(app=create_app())
+            self.db.create_all()
 
     def tearDown(self):
         """Executed after reach test"""
         pass
 
-    # test post a new payment to database(gatway)
-    def test_make_new_payment(self):
-        """Test if payment will be successfully processed if all data provided correctly """
-        res = self.client().post('/payment', json=self.new_payment)
+    # test post a new payment to database(gateway) with no security code is valid
+    def test_make_new_payment_no_security_code(self):
+        """Test if payment will be successfully processed if all data provided correctly but no security code """
+        res = self.client().post('/payment', json=self.no_security_code)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data[ 'success' ], True)
         self.assertEqual(data[ 'message' ], 'Payment is processed')
 
-    # test post a new payment to database(gateway) with no security code is valid
-    def test_make_new_payment_no_security_code(self):
-        """Test if payment will be successfully processed if all data provided correctly but no security code """
-        res = self.client().post('/payment', json=self.no_security_code)
+    # test post a new payment to database(gateway)
+    def test_make_new_payment(self):
+        """Test if payment will be successfully processed if all data provided correctly """
+        res = self.client().post('/payment', json=self.new_payment)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -97,7 +96,7 @@ class FiledApiTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data[ 'success' ], False)
-        self.assertEqual(data[ 'message' ],'Bad Request!!!! Please make sure the data you entered is correct')
+        self.assertEqual(data[ 'message' ], 'Bad Request!!!! Please make sure the data you entered is correct')
 
     # test error while making a new payment with no card holder sent
     def test_error_make_payment_no_card_holder(self):
