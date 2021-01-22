@@ -2,7 +2,6 @@ import os
 from flask_migrate import Migrate
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
-from flask_validator import ValidateCreditCard
 
 # Declare database name
 database_name = "filed"
@@ -44,11 +43,6 @@ class PremiumPayment(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    @classmethod
-    def __declare_last__(cls):
-        ValidateCreditCard(ExpensivePayment.credit_card_number, true, true, "The Credit card number is not valid. "
-                                                                            "Please check it")
-
 
 # Expensive Payment Gateway table
 class ExpensivePayment(db.Model):
@@ -72,11 +66,6 @@ class ExpensivePayment(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    @classmethod
-    def __declare_last__(cls):
-        ValidateCreditCard(ExpensivePayment.credit_card_number, true, true, "The Credit card number is not valid. "
-                                                                            "Please check it")
-
 
 # Cheap Payment Gateway table
 class CheapPayment(db.Model):
@@ -99,8 +88,3 @@ class CheapPayment(db.Model):
     def insert(self):
         db.session.add(self)
         db.session.commit()
-
-    @classmethod
-    def __declare_last__(cls):
-        ValidateCreditCard(ExpensivePayment.credit_card_number, true, true, "The Credit card number is not valid. "
-                                                                            "Please check it")
