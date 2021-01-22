@@ -44,6 +44,11 @@ class PremiumPayment(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    @classmethod
+    def __declare_last__(cls):
+        ValidateCreditCard(ExpensivePayment.credit_card_number, true, true, "The Credit card number is not valid. "
+                                                                            "Please check it")
+
 
 # Expensive Payment Gateway table
 class ExpensivePayment(db.Model):
@@ -72,6 +77,7 @@ class ExpensivePayment(db.Model):
         ValidateCreditCard(ExpensivePayment.credit_card_number, true, true, "The Credit card number is not valid. "
                                                                             "Please check it")
 
+
 # Cheap Payment Gateway table
 class CheapPayment(db.Model):
     __tablename__ = 'cheap_payment'
@@ -93,3 +99,8 @@ class CheapPayment(db.Model):
     def insert(self):
         db.session.add(self)
         db.session.commit()
+
+    @classmethod
+    def __declare_last__(cls):
+        ValidateCreditCard(ExpensivePayment.credit_card_number, true, true, "The Credit card number is not valid. "
+                                                                            "Please check it")
